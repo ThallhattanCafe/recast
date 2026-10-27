@@ -2,7 +2,9 @@
 
 PSX (original PlayStation) game translation tools for unpacking data, repacking text, and rebuilding checked disc images.
 
-Recast handles the part after translation: fitting text back into the game, keeping names and control codes intact, and rebuilding the disc without disturbing unrelated sectors. It started with the PS1 version of *Shiritsu Justice Gakuen: Nekketsu Seishun Nikki 2* (SLPS-02120). Its current offsets and runtime hooks are specific to that revision.
+Recast handles the part after translation: fitting text back into the game, keeping names and control codes intact, and rebuilding the disc without disturbing unrelated sectors.
+
+Current format support is for *Shiritsu Justice Gakuen: Nekketsu Seishun Nikki 2* (SLPS-02120), the game we are currently translating. Recast has not been tested with other games. Format support will expand when a new translation project starts.
 
 This repository contains the tools, tests, and documentation. It does not include translation data or a playable English patch. Recast does not translate dialogue automatically.
 
