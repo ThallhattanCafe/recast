@@ -1,6 +1,6 @@
 # Recast
 
-Tools for unpacking game data, editing text, and building a checked disc image.
+PSX (original PlayStation) game translation tools for unpacking data, repacking text, and rebuilding checked disc images.
 
 Recast handles the part after translation: fitting text back into the game, keeping names and control codes intact, and rebuilding the disc without disturbing unrelated sectors. It started with the PS1 version of *Shiritsu Justice Gakuen: Nekketsu Seishun Nikki 2* (SLPS-02120). Its current offsets and runtime hooks are specific to that revision.
 
