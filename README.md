@@ -2,6 +2,14 @@
 
 PSX (original PlayStation) game translation tools for unpacking data, repacking text, and rebuilding checked disc images.
 
+<p>
+  <a href="https://psxdatacenter.com/games/J/S/SLPS-02120.html">
+    <img src="https://psxdatacenter.com/images/covers/J/S/SLPS-02120.jpg" width="250" alt="Japanese cover of Shiritsu Justice Gakuen: Nekketsu Seishun Nikki 2">
+  </a>
+</p>
+
+*Our current translation project: Shiritsu Justice Gakuen: Nekketsu Seishun Nikki 2.* Cover art © Capcom; [scan source](https://psxdatacenter.com/games/J/S/SLPS-02120.html).
+
 Recast handles the part after translation: fitting text back into the game, keeping names and control codes intact, and rebuilding the disc without disturbing unrelated sectors.
 
 Current format support is for *Shiritsu Justice Gakuen: Nekketsu Seishun Nikki 2* (SLPS-02120), the game we are currently translating. Recast has not been tested with other games. Format support will expand when a new translation project starts.
@@ -49,11 +57,3 @@ No real-game manifest is included here. The builder writes a separate BIN, a CUE
 - [Testing and troubleshooting](Testing.md)
 - [Contributing](CONTRIBUTING.md)
 - [Wiki](https://github.com/ThallhattanCafe/recast/wiki)
-
-## Current limits
-
-Recast is not a general PS1 patcher. Related games may share formats, but their addresses and behaviour need to be checked independently. The disc writer currently targets one MODE2/2352 track.
-
-The tools came from the v0.28 translation workflow. That workflow has passed targeted emulator checks, not a complete school-year or real-BIOS playthrough. Passing the tests here does not establish that a particular translation is playable.
-
-Game images, BIOS files, extracted assets, translation scripts, patch manifests, emulator binaries, and saves are excluded. No license has been selected for this repository yet.
