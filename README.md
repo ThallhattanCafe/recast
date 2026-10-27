@@ -57,3 +57,7 @@ No real-game manifest is included here. The builder writes a separate BIN, a CUE
 - [Testing and troubleshooting](Testing.md)
 - [Contributing](CONTRIBUTING.md)
 - [Wiki](https://github.com/ThallhattanCafe/recast/wiki)
+
+## License
+
+Recast's tools and documentation are available under the [MIT License](LICENSE). Game artwork and other third-party material remain the property of their respective owners.
