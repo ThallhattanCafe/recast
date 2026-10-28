@@ -16,6 +16,8 @@ Current format support is for *Shiritsu Justice Gakuen: Nekketsu Seishun Nikki 2
 
 This repository contains the tools, tests, and documentation. It does not include translation data or a playable English patch. Recast does not translate dialogue automatically.
 
+The latest update brings in the sparse gender-bank and native date-table handling used to finish the current project's extracted text catalogue. It also adds a local revision audit and synthetic regression tests. Combat-exam instructions and move-list screens are the next translation work in that project; this update does not add support for those remaining screens. See the [change notes](CHANGELOG.md).
+
 ## Try it
 
 You need Python 3.11 or later. There are no third-party Python dependencies.
@@ -43,6 +45,7 @@ No real-game manifest is included here. The builder writes a separate BIN, a CUE
 | `build_game.py` | Apply a manifest, repair sector checksums, and verify the rebuilt disc. |
 | `lz_halfword.py` | Encode and decode halfword LZ streams with CD streaming limits. |
 | `scenario_text.py` | Repack dialogue while preserving table locations and event code. |
+| `audit_scenario.py` | Check local revisions, reviewed corrections and explicit wording expectations. |
 | `latin_runtime.py` | Assemble the MIPS helper for paired Latin glyphs. |
 | `school_life.py` | Handle the opening scenario's older text and glyph layout. |
 | `palette_patch.py` | Replace checked rectangles in four-bit indexed graphics. |
@@ -61,3 +64,4 @@ No real-game manifest is included here. The builder writes a separate BIN, a CUE
 ## License
 
 Recast's tools and documentation are available under the [MIT License](LICENSE). Game artwork and other third-party material remain the property of their respective owners.
+

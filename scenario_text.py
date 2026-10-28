@@ -36,14 +36,19 @@ def read_words(data,pos):
         if v==0x3001:return words
     raise ValueError('Unterminated text')
 
-def parse(data):
+def parse(data, allow_sparse_gender=False):
     tables=[]
     for p in range(START,START+256,4):
         t=struct.unpack_from('<I',data,p)[0]-BASE
+        # Gedo is male-only: slot 1 is null, but common banks follow it.
+        # Accept only this observed hole, and keep original bank numbers.
+        if allow_sparse_gender and p==START+4 and t==-BASE:
+            following=struct.unpack_from('<I',data,p+4)[0]-BASE
+            if START<following<END:continue
         if not START<t<END:break
-        tables.append(t)
+        tables.append(((p-START)//4,t))
     result=[]
-    for g,t in enumerate(tables):
+    for g,t in tables:
         starts=[]
         for p in range(t,END,4):
             x=struct.unpack_from('<I',data,p)[0]-BASE
@@ -69,6 +74,30 @@ def encode(lines,original):
         if date:result.extend([0x3003,1])
         for segment in re.split(r'(\{\w+\})',line):
             if segment.startswith('{'):
+                # These native tables are indexed by glyph, not by packed Latin pair.
+                # Keep their cell count/order and the debug date-grid cursor spacing.
+                if segment=='{native_date_alphabet}':
+                    assert lines==[segment] and len(original)==14
+                    assert original[:10]==[10,1,2,3,4,5,6,7,8,9]
+                    assert original[12:]==[1566,0x3001]
+                    result.extend(original[:10]+[23,14,1566]) # M, D, space
+                    continue
+                if segment=='{native_date_labels}':
+                    assert lines==[segment] and len(original)==7
+                    assert [original[i] for i in [0,1,3,4,6]]==[1566,1566,1566,1566,0x3001]
+                    result.extend([1566,1566,23,1566,1566,14])
+                    continue
+                native=re.fullmatch(r'\{source_line_([123])\}',segment)
+                if native:
+                    source_lines=[[]]
+                    for word in original[:-1]:
+                        if word==0x3000:source_lines.append([])
+                        else:source_lines[-1].append(word)
+                    n=int(native[1]);assert n<len(source_lines)
+                    row=source_lines[n]
+                    assert row and all(word==1566 or 1<=word<=10 for word in row), 'Only original numeric grid rows may be reused'
+                    result.extend(row)
+                    continue
                 speed=re.fullmatch(r'\{speed_(\d+)\}',segment)
                 if speed:
                     value=int(speed[1])
@@ -98,7 +127,7 @@ def encode(lines,original):
     return result
 
 def patch(data,spec):
-    original=bytes(data);out=bytearray(original);groups=parse(original)
+    original=bytes(data);out=bytearray(original);groups=parse(original, allow_sparse_gender=spec.get('allow_sparse_gender',False))
     prepared=original;legacy_report=None
     if 'opening' in spec:
         from school_life import patch as opening_patch
@@ -140,6 +169,6 @@ def patch(data,spec):
         pos=struct.unpack_from('<I',out,pointer)[0]-BASE
         assert bytes(out[pos:pos+len(raw)])==raw
     assert out[END:]==original[END:]
-    assert out[START:START+len(groups)*4]==original[START:START+len(groups)*4]
+    assert out[START:START+(max(g['group'] for g in groups)+1)*4]==original[START:START+(max(g['group'] for g in groups)+1)*4]
     return bytes(out),{'translated_instances':len(translated),'entries':translated,'opening':legacy_report,
                        'unique_strings':len(locations),'free_text_bytes':sum(b-a for a,b in free)}

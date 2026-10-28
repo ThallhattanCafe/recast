@@ -38,6 +38,38 @@ Timing tokens such as `{speed_15}` and `{speed_255}` must retain the source valu
 
 Plain scenario text supports ASCII letters, digits, spaces, and `?!.,':-()`. Curly quotes, accents, and arbitrary Unicode are unsupported.
 
+### Missing gender bank
+
+Set `"allow_sparse_gender": true` in a scenario spec for the observed male-only layout: bank 0 exists, bank 1 is null, and shared banks follow it. Bank numbers stay unchanged, so the first shared bank remains bank 2. Parsing stops at other holes. Leave the option off for ordinary layouts; this is not a general repair switch for malformed data.
+
+### Native date tables
+
+Some date controls index individual glyph cells rather than ordinary dialogue strings. Packed Latin text would change those cell positions. These tokens preserve the native layout:
+
+- `{native_date_alphabet}` replaces only the month/day labels with M/D, retaining the ten digit indices, space and terminator. It must be the entire entry and the source must match the expected table shape.
+- `{native_date_labels}` preserves the six label cells and terminator, changing only the month/day cells to M/D. It also requires an entry of its own and a matching source shape.
+- `{source_line_1}`, `{source_line_2}` and `{source_line_3}` copy the corresponding original numeric grid rows, numbered after the first line. Only digits and the native spacing glyph are accepted. Dialogue, names and control commands cannot be copied this way.
+
+These glyph IDs and shapes are specific to the supported game. They are not a general date-format API. See `test_native_tables.py` for generated examples and rejection cases.
+
+### Reviewing a revision
+
+`audit_scenario.py` reads two local scenario specs and an original decompressed asset. Its optional correction file is a JSON array of exact before/after edits. This example is invented:
+
+```json
+[{"entry": [0, 0], "before": ["Hello."], "after": ["Good morning."]}]
+```
+
+The optional expectations file checks words selected by a reviewer:
+
+```json
+[{"entry": [1, 0], "contains": ["her"], "excludes": ["him", "they", "them", "their"]}]
+```
+
+Each `entry` is `[bank, entry_number]`. Matching is case-insensitive and uses word boundaries. These checks do not infer gender or judge translation quality. Specify expectations only after reading the source and scene context; plural pronouns can be correct elsewhere.
+
+Legacy `opening.dialogue` and `opening.bank_entries` count as existing translations. An explicit bank override needs the same reviewed correction as any other edit. Changing the legacy opening specification itself requires a separate review. The report contains counts, entry IDs and layout flags, not dialogue text.
+
 ## Graphics specification
 
 A graphics spec has `asset` and a `patches` list. Each patch supplies `label`, `text`, `pixel_offset`, `width`, `height`, `rect`, `original_sha256`, and `pixels`.
@@ -47,3 +79,4 @@ A graphics spec has `asset` and a `patches` list. Each patch supplies `label`, `
 ## Opening scenario
 
 `school_life.py` has its own layout-specific format: `dialogue`, seven `choices`, and optional `dialogue_counts`, `runtime_pairs`, `reclaim_unused_kanji`, and `bank_entries`. Read its synthetic tests before adapting it. This path is not interchangeable with the general repacker.
+
